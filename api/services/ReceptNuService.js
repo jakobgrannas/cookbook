@@ -1,10 +1,14 @@
-exports.getRecipeData = function domOperator (selector) {
+exports.getRecipeData = function ($) {
 	function getInstructions (instructions) {
 		var result = [];
 
-		for (var i=0; i < instructions.length; i++) {
-			result.push(instructions[i].innerText.trim());
-		}
+		/*for (var i=0; i < instructions.length; i++) {
+			result.push(instructions[i].text().trim());
+		}*/
+
+		instructions.map(function () {
+			result.push($(this).text().trim());
+		});
 
 		return result;
 	}
@@ -14,21 +18,21 @@ exports.getRecipeData = function domOperator (selector) {
 		var result = [], ingredient;
 
 		for (var i=0; i < ingredients.length; i++) {
-			ingredient = ingredients[i];
+			ingredient = $(ingredients[i]);
 			result.push({
-				amount: ingredient.innerText.trim(),
-				name: ingredient.nextElementSibling.innerText.trim()
+				amount: ingredient.text().trim(),
+				name: ingredient.next().text().trim()
 			});
 		}
 		return result;
 	}
 
-	var ingredients = document.querySelectorAll('#ingredients .ingredient'),
-		instructions = document.querySelectorAll('.step-by-step li > span'),
+	var ingredients = $('#ingredients .ingredient'), //$All('#ingredients .ingredient'),
+		instructions = $('.step-by-step li > span'),
 		resultObj = {
-			title: document.querySelector('.basic-info h1').firstChild.textContent.trim(),
-			cookingTime: document.querySelector('.basic-info .time').innerText.trim(),
-			amountOfPersons: document.querySelector('.basic-info .amount').innerText.trim(),
+			title: $('.basic-info h1:first-child').text().trim(),
+			cookingTime: $('.basic-info .time').text().trim(),
+			amountOfPersons: $('.basic-info .amount').text().trim(),
 			instructions: getInstructions(instructions),
 			ingredients: getIngredients(ingredients)
 		};

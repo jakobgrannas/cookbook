@@ -1,6 +1,18 @@
 var _phantom = require('phantom'),
-	Q = require('q');
+	Q = require('q'),
+	scraperjs = require('scraperjs');
 
+function getPageData (scrapeFn, url) {
+	return scraperjs.StaticScraper.create(url)
+		.scrape(
+			scrapeFn,
+			function(result) {
+				//console.log(result);
+				return result;
+			}
+		);
+}
+/*
 function scanPhantomPage(url, callback) {
 	var deferred = Q.defer();
 	_phantom.create("--web-security=no", "--ignore-ssl-errors=yes", { port: 12345 }, function (ph) {
@@ -32,7 +44,7 @@ function getPageData (page, callback) {
 	page.close();
 	return deferred.promise;
 }
-
+*/
 exports.getRecipe = function (url) {
 	var callback;
 
@@ -48,15 +60,18 @@ exports.getRecipe = function (url) {
 	else if(url.indexOf('tasteline.com') > -1) {
 		callback = TasteLineService.getRecipeData;
 	}
-	else {
+	/*else {
 		var deferred = Q.defer().reject('Could not import recipe. Site not supported. Please try another site');
 		return deferred.promise();
-	}
+	}*/
 
-	if(getterFn) {
-		return scanPhantomPage(url)
+	if(callback) {
+		var result = scraperjs.StaticScraper.create(url).scrape(callback);
+		//console.log(result);
+		return result;
+		/*return scanPhantomPage(url)
 			.then(function (page) {
 				return getPageData(page, callback);
-			});
+			});*/
 	}
 };

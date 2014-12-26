@@ -24,7 +24,16 @@ module.exports = {
 	 */
 	import: function (request, response) {
 		RecipeService.getRecipe("http://www.recept.nu/paolo-roberto/varmratter/fisk-och-skaldjur/pasta-med-vitloksfrasta-rakor-och-vitt-vin/") // Test url
-		.then(
+		.done(function (utils) {
+			console.log(utils.lastReturn);
+			response.send(utils.lastReturn);
+		})
+		.onError(function (utils) {
+			response.send({
+				errorMessage: utils.lastReturn
+			});
+		});
+		/*.then(
 			function (result) {
 				response.send(result);
 			},
@@ -33,7 +42,7 @@ module.exports = {
 					errorMessage: rejectReason
 				});
 			}
-		);
+		);*/
 	},
 
 	/**
